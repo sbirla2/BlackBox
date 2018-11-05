@@ -43,7 +43,7 @@ def initialize(context):
     piotroski = Piotroski()
     
     pipe.add(piotroski, 'piotroski')
-    pipe.set_screen(piotroski >= 7 && piotroski<=3)
+    pipe.set_screen(piotroski >= 7)
     context.is_month_end = False
     schedule_function(set_month_end, date_rules.month_end(1)) 
     schedule_function(trade, date_rules.month_end(), time_rules.market_close())
@@ -55,7 +55,7 @@ def before_trading_start(context, data):
     if context.is_month_end:
         context.results = pipeline_output('piotroski')
         context.long_stocks = context.results.sort_values('piotroski', ascending=False).head(10)
-        context.short_stocks = context.results.sort_values('piotroski', ascending=True).head(10)
+        //context.short_stocks = context.results.sort_values('piotroski', ascending=True).head(10)
         context.total_piotroski = context.long_stocks.piotroski.sum()
         context.piotroski_weight = context.long_stocks.piotroski/context.total_piotroski
         update_universe(context.long_stocks.index)
